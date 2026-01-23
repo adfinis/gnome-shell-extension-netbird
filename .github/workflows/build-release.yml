@@ -36,7 +36,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y blueprint-compiler gettext gobject-introspection libgirepository1.0-dev
+          sudo apt-get install -y blueprint-compiler gettext gobject-introspection libgirepository1.0-dev libgtk-4-dev
           yarn --dev
 
       - name: Get Version
