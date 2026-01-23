@@ -108,6 +108,14 @@ jobs:
           name: extension-package
           path: ./artifacts
 
+      - name: List downloaded artifacts
+        run: |
+          echo "Contents of artifacts directory:"
+          ls -la ./artifacts/
+          echo ""
+          echo "Looking for zip files:"
+          find ./artifacts -name "*.zip" -type f
+
       - name: Generate Release Notes
         id: generate-notes
         run: |
@@ -174,17 +182,22 @@ jobs:
 
       - name: Generate Checksums
         run: |
-          PACKAGE_PATH="./artifacts/${{ needs.build.outputs.package-name }}"
-          CHECKSUM_FILE="./artifacts/checksum.txt"
+          # Find the actual zip file in artifacts
+          ZIP_FILE=$(find ./artifacts -name "*.zip" -type f | head -n 1)
 
-          if [ -f "$PACKAGE_PATH" ]; then
-            echo "Generating SHA256 checksum..."
-            sha256sum "$PACKAGE_PATH" | tee "$CHECKSUM_FILE"
-            echo "Checksum saved to $CHECKSUM_FILE"
-          else
-            echo "Warning: Package file not found at $PACKAGE_PATH"
+          if [ -z "$ZIP_FILE" ]; then
+            echo "Error: No zip file found in artifacts directory"
+            echo "Contents of artifacts:"
+            ls -la ./artifacts/
             exit 1
           fi
+
+          echo "Found zip file: $ZIP_FILE"
+          CHECKSUM_FILE="./artifacts/checksum.txt"
+
+          echo "Generating SHA256 checksum..."
+          sha256sum "$ZIP_FILE" | tee "$CHECKSUM_FILE"
+          echo "Checksum saved to $CHECKSUM_FILE"
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
@@ -192,7 +205,7 @@ jobs:
           name: "Release v${{ needs.build.outputs.version }}"
           body_path: release_notes.md
           files: |
-            ./artifacts/${{ needs.build.outputs.package-name }}
+            ./artifacts/*.zip
             ./artifacts/checksum.txt
           draft: false
           prerelease: ${{ contains(needs.build.outputs.version, '-') }}
