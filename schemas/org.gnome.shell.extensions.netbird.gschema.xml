@@ -1,0 +1,184 @@
+<schemalist>
+  <schema id="org.gnome.shell.extensions.netbird" path="/org/gnome/shell/extensions/netbird/">
+    <!-- General/Global flags -->
+    <key name="general-management-url" type="s">
+      <default>"https://api.netbird.io:443"</default>
+      <summary>Netbird Management URL</summary>
+      <description>Management Service URL [http|https]://[host]:[port] (default "https://api.netbird.io:443")</description>
+    </key>
+    <key name="general-admin-url" type="s">
+      <default>"https://app.netbird.io:443"</default>
+      <summary>Admin Panel URL</summary>
+      <description>Admin Panel URL [http|https]://[host]:[port] (default "https://app.netbird.io:443")</description>
+    </key>
+    <key name="general-anonymize" type="b">
+      <default>false</default>
+      <summary>Anonymize output</summary>
+      <description>Anonymize IP addresses and non-netbird.io domains in logs and status output</description>
+    </key>
+    <key name="general-daemon-addr" type="s">
+      <default>"unix:///var/run/netbird.sock"</default>
+      <summary>Daemon service address</summary>
+      <description>Daemon service address to serve CLI requests [unix|tcp]://[path|host:port] (default "unix:///var/run/netbird.sock")</description>
+    </key>
+    <key name="general-hostname" type="s">
+      <default>""</default>
+      <summary>Custom hostname</summary>
+      <description>Sets a custom hostname for the device</description>
+    </key>
+    <key name="general-log-file" type="s">
+      <default>"/var/log/netbird/client.log"</default>
+      <summary>Log file path</summary>
+      <description>Sets NetBird log paths written to simultaneously. If console is specified the log will be output to stdout. If syslog is specified the log will be sent to syslog daemon. (default "/var/log/netbird/client.log")</description>
+    </key>
+    <key name="general-log-level" type="s">
+      <default>"info"</default>
+      <summary>Log level</summary>
+      <description>Sets NetBird log level (default "info")</description>
+    </key>
+    <key name="general-preshared-key" type="s">
+      <default>""</default>
+      <summary>WireGuard PreSharedKey</summary>
+      <description>Sets WireGuard PreSharedKey property. If set, then only peers that have the same key can communicate.</description>
+    </key>
+    <key name="general-service" type="s">
+      <default>"netbird"</default>
+      <summary>Service name</summary>
+      <description>Netbird system service name (default "netbird")</description>
+    </key>
+    <key name="general-setup-key" type="s">
+      <default>""</default>
+      <summary>Setup key</summary>
+      <description>Setup key obtained from the Management Service Dashboard (used to register peer)</description>
+    </key>
+    <key name="general-setup-key-file" type="s">
+      <default>""</default>
+      <summary>Setup key file path</summary>
+      <description>The path to a setup key obtained from the Management Service Dashboard (used to register peer). This is ignored if the setup-key flag is provided.</description>
+    </key>
+
+    <!-- Up command flags - Connection Settings -->
+    <key name="up-allow-server-ssh" type="b">
+      <default>false</default>
+      <summary>Allow SSH server on peer</summary>
+      <description>If enabled, the SSH server will be permitted</description>
+    </key>
+    <key name="up-block-inbound" type="b">
+      <default>false</default>
+      <summary>Block inbound connections</summary>
+      <description>If enabled, the client will not allow any inbound connections to the local machine nor routed networks. This overrides any policies received from the management service.</description>
+    </key>
+    <key name="up-block-lan-access" type="b">
+      <default>false</default>
+      <summary>Block LAN access</summary>
+      <description>Block access to local networks (LAN) when using this peer as a router or exit node</description>
+    </key>
+    <key name="up-disable-auto-connect" type="b">
+      <default>false</default>
+      <summary>Disable auto-connect</summary>
+      <description>Disables auto-connect feature. If enabled, then the client won't connect automatically when the service starts.</description>
+    </key>
+
+    <!-- Up command flags - Route Settings -->
+    <key name="up-disable-client-routes" type="b">
+      <default>false</default>
+      <summary>Disable client routes</summary>
+      <description>If enabled, the client won't process client routes received from the management service.</description>
+    </key>
+    <key name="up-disable-server-routes" type="b">
+      <default>false</default>
+      <summary>Disable server routes</summary>
+      <description>If enabled, the client won't act as a router for server routes received from the management service.</description>
+    </key>
+
+    <!-- Up command flags - DNS Settings -->
+    <key name="up-disable-dns" type="b">
+      <default>false</default>
+      <summary>Disable DNS</summary>
+      <description>If enabled, the client won't configure DNS settings.</description>
+    </key>
+    <key name="up-dns-resolver-address" type="s">
+      <default>""</default>
+      <summary>DNS resolver address</summary>
+      <description>Sets a custom address for NetBird's local DNS resolver. If set, the agent won't attempt to discover the best ip and port to listen on. An empty string "" clears the previous configuration. E.g. 127.0.0.1:5053</description>
+    </key>
+    <key name="up-dns-router-interval" type="s">
+      <default>"1m0s"</default>
+      <summary>DNS route update interval</summary>
+      <description>DNS route update interval (default 1m0s)</description>
+    </key>
+    <key name="up-extra-dns-labels" type="s">
+      <default>""</default>
+      <summary>Extra DNS labels</summary>
+      <description>Sets DNS labels. You can specify a comma-separated list of up to 32 labels. An empty string "" clears the previous configuration. E.g. vpc1,mgmt1</description>
+    </key>
+
+    <!-- Up command flags - Firewall Settings -->
+    <key name="up-disable-firewall" type="b">
+      <default>false</default>
+      <summary>Disable firewall</summary>
+      <description>If enabled, the client won't modify firewall rules.</description>
+    </key>
+
+    <!-- Up command flags - Advanced Network Settings -->
+    <key name="up-interface-name" type="s">
+      <default>"wt0"</default>
+      <summary>WireGuard interface name</summary>
+      <description>WireGuard interface name (default "wt0")</description>
+    </key>
+    <key name="up-mtu" type="u">
+      <default>1280</default>
+      <summary>MTU</summary>
+      <description>Set MTU (Maximum Transmission Unit) for the WireGuard interface (default 1280)</description>
+    </key>
+    <key name="up-wireguard-port" type="u">
+      <default>51820</default>
+      <summary>WireGuard port</summary>
+      <description>WireGuard interface listening port (default 51820)</description>
+    </key>
+    <key name="up-external-ip-map" type="s">
+      <default>""</default>
+      <summary>External IP maps</summary>
+      <description>Sets external IPs maps between local addresses and interfaces. You can specify a comma-separated list with a single IP and IP/IP or IP/Interface Name. E.g. 12.34.56.78/10.0.0.1 or 12.34.56.200,12.34.56.78/10.0.0.1,12.34.56.80/eth1</description>
+    </key>
+    <key name="up-extra-iface-blacklist" type="s">
+      <default>""</default>
+      <summary>Extra interface blacklist</summary>
+      <description>Extra list of default interfaces to ignore for listening</description>
+    </key>
+    <key name="up-network-monitor" type="b">
+      <default>false</default>
+      <summary>Network monitoring</summary>
+      <description>Manage network monitoring. Defaults to true on Windows and macOS, false on Linux and FreeBSD.</description>
+    </key>
+
+    <!-- Up command flags - Experimental Features -->
+    <key name="up-enable-lazy-connection" type="b">
+      <default>false</default>
+      <summary>Enable lazy connection (Experimental)</summary>
+      <description>If enabled, the client will establish connections on-demand. Note: this setting may be overridden by management configuration.</description>
+    </key>
+    <key name="up-enable-rosenpass" type="b">
+      <default>false</default>
+      <summary>Enable Rosenpass (Experimental)</summary>
+      <description>If enabled, the connection will be post-quantum secured via Rosenpass.</description>
+    </key>
+    <key name="up-rosenpass-permissive" type="b">
+      <default>false</default>
+      <summary>Rosenpass permissive mode (Experimental)</summary>
+      <description>Enable Rosenpass in permissive mode to allow this peer to accept WireGuard connections without requiring Rosenpass functionality from peers that do not have Rosenpass enabled.</description>
+    </key>
+
+    <!-- Up command flags - Authentication Settings -->
+    <key name="up-no-browser" type="b">
+      <default>false</default>
+      <summary>No browser for SSO</summary>
+      <description>Do not open the browser for SSO login</description>
+    </key>
+    <key name="up-profile" type="s">
+      <default>""</default>
+      <summary>Profile name</summary>
+      <description>Profile name to use for the login. If not specified, the last used profile will be used.</description>
+    </key>
+  </schema>
+</schemalist>

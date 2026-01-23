@@ -1,0 +1,21 @@
+{
+    "extends": "@tsconfig/strictest/tsconfig.json",
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "NodeNext",
+        "lib": [
+            "ES2022"
+        ],
+        "removeComments": false,
+        "skipLibCheck": true,
+        // Do not include any node_modules types in compilation for GNOME Shell code.
+        // Any of these types is for the node.js environment, and as such likely
+        // inappropriate for compilation in a gjs environment.
+        "types": [],
+        "outDir": "build",
+    },
+    "include": [
+        "@types/gnome-shell/ambient.d.ts",
+        "src/**/*.ts"
+    ]
+}

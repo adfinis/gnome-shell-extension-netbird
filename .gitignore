@@ -1,0 +1,6 @@
+*.zip
+dist/
+build/
+node_modules/
+*.compiled
+.vscode/

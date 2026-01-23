@@ -1,0 +1,243 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NetbirdGeneralPage: Adw.PreferencesPage {
+  title: _("General");
+  icon_name: "dialog-information-symbolic";
+  // Global Settings
+  Adw.PreferencesGroup {
+    title: _("Global Settings");
+    description: _("Global configuration options that apply to all NetBird operations.");
+
+    Adw.EntryRow managementUrl {
+      title: _("Management Service URL");
+      tooltip-text: _("Management Service URL [http|https]://[host]:[port]");
+    }
+
+    Adw.EntryRow adminUrl {
+      title: _("Admin Panel URL");
+      tooltip-text: _("Admin Panel URL [http|https]://[host]:[port]");
+    }
+
+    Adw.SwitchRow anonymize {
+      title: _("Anonymize Output");
+      subtitle: _("Anonymize IP addresses and non-netbird.io domains in logs and status");
+    }
+
+    Adw.EntryRow daemonAddr {
+      title: _("Daemon Service Address");
+      tooltip-text: _("Daemon service address to serve CLI requests [unix|tcp]://[path|host:port]");
+    }
+
+    Adw.EntryRow hostname {
+      title: _("Custom Hostname");
+      tooltip-text: _("Sets a custom hostname for the device");
+    }
+
+    Adw.EntryRow logFile {
+      title: _("Log File Path");
+      tooltip-text: _("Sets NetBird log paths (use 'console' for stdout, 'syslog' for syslog daemon)");
+    }
+
+    Adw.ComboRow logLevel {
+      title: _("Log Level");
+      tooltip-text: _("Sets NetBird log level");
+
+      model: StringList {
+        strings [
+          "trace",
+          "debug",
+          "info",
+          "warn",
+          "error",
+        ]
+      };
+    }
+
+    Adw.PasswordEntryRow presharedKey {
+      title: _("WireGuard PreShared Key");
+      tooltip-text: _("If set, only peers with the same key can communicate");
+    }
+
+    Adw.EntryRow service {
+      title: _("Service Name");
+      tooltip-text: _("Netbird system service name");
+    }
+
+    Adw.PasswordEntryRow setupKey {
+      title: _("Setup Key");
+      tooltip-text: _("Setup key from Management Service Dashboard (used to register peer)");
+    }
+
+    Adw.EntryRow setupKeyFile {
+      title: _("Setup Key File Path");
+      tooltip-text: _("Path to setup key file (ignored if setup key is provided)");
+    }
+  }
+
+  // Connection Settings
+  Adw.PreferencesGroup {
+    title: _("Connection Settings");
+    description: _("Configure connection behavior and security options.");
+
+    Adw.SwitchRow allowServerSsh {
+      title: _("Allow SSH Server");
+      subtitle: _("Allow SSH server on peer");
+    }
+
+    Adw.SwitchRow blockInbound {
+      title: _("Block Inbound Connections");
+      subtitle: _("Block all inbound connections to local machine and routed networks");
+    }
+
+    Adw.SwitchRow blockLanAccess {
+      title: _("Block LAN Access");
+      subtitle: _("Block access to local networks when used as router or exit node");
+    }
+
+    Adw.SwitchRow disableAutoConnect {
+      title: _("Disable Auto-Connect");
+      subtitle: _("Don't connect automatically when the service starts");
+    }
+  }
+
+  // Route Settings
+  Adw.PreferencesGroup {
+    title: _("Route Settings");
+    description: _("Configure routing behavior for client and server routes.");
+
+    Adw.SwitchRow disableClientRoutes {
+      title: _("Disable Client Routes");
+      subtitle: _("Don't process client routes from management service");
+    }
+
+    Adw.SwitchRow disableServerRoutes {
+      title: _("Disable Server Routes");
+      subtitle: _("Don't act as router for server routes from management service");
+    }
+  }
+
+  // DNS Settings
+  Adw.PreferencesGroup {
+    title: _("DNS Settings");
+    description: _("Configure DNS resolution and related options.");
+
+    Adw.SwitchRow disableDns {
+      title: _("Disable DNS");
+      subtitle: _("Don't configure DNS settings");
+    }
+
+    Adw.EntryRow dnsResolverAddress {
+      title: _("DNS Resolver Address");
+      tooltip-text: _("Custom address for NetBird's local DNS resolver (e.g., 127.0.0.1:5053)");
+    }
+
+    Adw.EntryRow dnsRouterInterval {
+      title: _("DNS Router Interval");
+      tooltip-text: _("DNS route update interval (e.g., 1m0s)");
+    }
+
+    Adw.EntryRow extraDnsLabels {
+      title: _("Extra DNS Labels");
+      tooltip-text: _("Comma-separated list of up to 32 DNS labels (e.g., vpc1,mgmt1)");
+    }
+  }
+
+  // Firewall Settings
+  Adw.PreferencesGroup {
+    title: _("Firewall Settings");
+    description: _("Configure firewall behavior.");
+
+    Adw.SwitchRow disableFirewall {
+      title: _("Disable Firewall");
+      subtitle: _("Don't modify firewall rules");
+    }
+  }
+
+  // Advanced Network Settings
+  Adw.PreferencesGroup {
+    title: _("Advanced Network Settings");
+    description: _("Advanced WireGuard and network interface configuration.");
+
+    Adw.EntryRow interfaceName {
+      title: _("WireGuard Interface Name");
+      tooltip-text: _("Name of the WireGuard interface");
+    }
+
+    Adw.SpinRow mtu {
+      title: _("MTU");
+      subtitle: _("Maximum Transmission Unit for WireGuard interface");
+
+      adjustment: Adjustment {
+        lower: 576;
+        upper: 65535;
+        step-increment: 1;
+        page-increment: 100;
+      };
+    }
+
+    Adw.SpinRow wireguardPort {
+      title: _("WireGuard Port");
+      subtitle: _("WireGuard interface listening port");
+
+      adjustment: Adjustment {
+        lower: 1;
+        upper: 65535;
+        step-increment: 1;
+        page-increment: 100;
+      };
+    }
+
+    Adw.EntryRow externalIpMap {
+      title: _("External IP Maps");
+      tooltip-text: _("Comma-separated list of IP maps (e.g., 12.34.56.78/10.0.0.1,12.34.56.80/eth1)");
+    }
+
+    Adw.EntryRow extraIfaceBlacklist {
+      title: _("Extra Interface Blacklist");
+      tooltip-text: _("Extra list of default interfaces to ignore for listening");
+    }
+
+    Adw.SwitchRow networkMonitor {
+      title: _("Network Monitoring");
+      subtitle: _("Enable network monitoring");
+    }
+  }
+
+  // Experimental Features
+  Adw.PreferencesGroup {
+    title: _("Experimental Features");
+    description: _("Experimental features that may change or be removed in future versions.");
+
+    Adw.SwitchRow enableLazyConnection {
+      title: _("Enable Lazy Connection");
+      subtitle: _("[Experimental] Establish connections on-demand");
+    }
+
+    Adw.SwitchRow enableRosenpass {
+      title: _("Enable Rosenpass");
+      subtitle: _("[Experimental] Post-quantum security via Rosenpass");
+    }
+
+    Adw.SwitchRow rosenpassPermissive {
+      title: _("Rosenpass Permissive Mode");
+      subtitle: _("[Experimental] Accept connections from peers without Rosenpass");
+    }
+  }
+
+  // Authentication Settings
+  Adw.PreferencesGroup {
+    title: _("Authentication Settings");
+    description: _("Configure authentication and profile options.");
+
+    Adw.SwitchRow noBrowser {
+      title: _("No Browser for SSO");
+      subtitle: _("Don't open browser for SSO login");
+    }
+
+    Adw.EntryRow profile {
+      title: _("Profile Name");
+      tooltip-text: _("Profile name to use for login (uses last profile if empty)");
+    }
+  }
+}

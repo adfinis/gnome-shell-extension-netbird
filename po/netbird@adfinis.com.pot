@@ -1,0 +1,353 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Adfinis AG <support@adfinis.com>
+# This file is distributed under the same license as the netbird@adfinis.com package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: netbird@adfinis.com\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-10-23 04:11+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ui/GeneralPage.blp:5
+msgid "General"
+msgstr ""
+
+#: ui/GeneralPage.blp:10
+msgid "Global Settings"
+msgstr ""
+
+#: ui/GeneralPage.blp:11
+msgid "Global configuration options that apply to all NetBird operations."
+msgstr ""
+
+#: ui/GeneralPage.blp:14
+msgid "Management Service URL"
+msgstr ""
+
+#: ui/GeneralPage.blp:15
+msgid "Management Service URL [http|https]://[host]:[port]"
+msgstr ""
+
+#: ui/GeneralPage.blp:19
+msgid "Admin Panel URL"
+msgstr ""
+
+#: ui/GeneralPage.blp:20
+msgid "Admin Panel URL [http|https]://[host]:[port]"
+msgstr ""
+
+#: ui/GeneralPage.blp:24
+msgid "Anonymize Output"
+msgstr ""
+
+#: ui/GeneralPage.blp:25
+msgid "Anonymize IP addresses and non-netbird.io domains in logs and status"
+msgstr ""
+
+#: ui/GeneralPage.blp:29
+msgid "Daemon Service Address"
+msgstr ""
+
+#: ui/GeneralPage.blp:30
+msgid ""
+"Daemon service address to serve CLI requests [unix|tcp]://[path|host:port]"
+msgstr ""
+
+#: ui/GeneralPage.blp:34
+msgid "Custom Hostname"
+msgstr ""
+
+#: ui/GeneralPage.blp:35
+msgid "Sets a custom hostname for the device"
+msgstr ""
+
+#: ui/GeneralPage.blp:39
+msgid "Log File Path"
+msgstr ""
+
+#: ui/GeneralPage.blp:40
+msgid ""
+"Sets NetBird log paths (use 'console' for stdout, 'syslog' for syslog daemon)"
+msgstr ""
+
+#: ui/GeneralPage.blp:44
+msgid "Log Level"
+msgstr ""
+
+#: ui/GeneralPage.blp:45
+msgid "Sets NetBird log level"
+msgstr ""
+
+#: ui/GeneralPage.blp:58
+msgid "WireGuard PreShared Key"
+msgstr ""
+
+#: ui/GeneralPage.blp:59
+msgid "If set, only peers with the same key can communicate"
+msgstr ""
+
+#: ui/GeneralPage.blp:63
+msgid "Service Name"
+msgstr ""
+
+#: ui/GeneralPage.blp:64
+msgid "Netbird system service name"
+msgstr ""
+
+#: ui/GeneralPage.blp:68
+msgid "Setup Key"
+msgstr ""
+
+#: ui/GeneralPage.blp:69
+msgid "Setup key from Management Service Dashboard (used to register peer)"
+msgstr ""
+
+#: ui/GeneralPage.blp:73
+msgid "Setup Key File Path"
+msgstr ""
+
+#: ui/GeneralPage.blp:74
+msgid "Path to setup key file (ignored if setup key is provided)"
+msgstr ""
+
+#: ui/GeneralPage.blp:80
+msgid "Connection Settings"
+msgstr ""
+
+#: ui/GeneralPage.blp:81
+msgid "Configure connection behavior and security options."
+msgstr ""
+
+#: ui/GeneralPage.blp:84
+msgid "Allow SSH Server"
+msgstr ""
+
+#: ui/GeneralPage.blp:85
+msgid "Allow SSH server on peer"
+msgstr ""
+
+#: ui/GeneralPage.blp:89
+msgid "Block Inbound Connections"
+msgstr ""
+
+#: ui/GeneralPage.blp:90
+msgid "Block all inbound connections to local machine and routed networks"
+msgstr ""
+
+#: ui/GeneralPage.blp:94
+msgid "Block LAN Access"
+msgstr ""
+
+#: ui/GeneralPage.blp:95
+msgid "Block access to local networks when used as router or exit node"
+msgstr ""
+
+#: ui/GeneralPage.blp:99
+msgid "Disable Auto-Connect"
+msgstr ""
+
+#: ui/GeneralPage.blp:100
+msgid "Don't connect automatically when the service starts"
+msgstr ""
+
+#: ui/GeneralPage.blp:106
+msgid "Route Settings"
+msgstr ""
+
+#: ui/GeneralPage.blp:107
+msgid "Configure routing behavior for client and server routes."
+msgstr ""
+
+#: ui/GeneralPage.blp:110
+msgid "Disable Client Routes"
+msgstr ""
+
+#: ui/GeneralPage.blp:111
+msgid "Don't process client routes from management service"
+msgstr ""
+
+#: ui/GeneralPage.blp:115
+msgid "Disable Server Routes"
+msgstr ""
+
+#: ui/GeneralPage.blp:116
+msgid "Don't act as router for server routes from management service"
+msgstr ""
+
+#: ui/GeneralPage.blp:122
+msgid "DNS Settings"
+msgstr ""
+
+#: ui/GeneralPage.blp:123
+msgid "Configure DNS resolution and related options."
+msgstr ""
+
+#: ui/GeneralPage.blp:126
+msgid "Disable DNS"
+msgstr ""
+
+#: ui/GeneralPage.blp:127
+msgid "Don't configure DNS settings"
+msgstr ""
+
+#: ui/GeneralPage.blp:131
+msgid "DNS Resolver Address"
+msgstr ""
+
+#: ui/GeneralPage.blp:132
+msgid "Custom address for NetBird's local DNS resolver (e.g., 127.0.0.1:5053)"
+msgstr ""
+
+#: ui/GeneralPage.blp:136
+msgid "DNS Router Interval"
+msgstr ""
+
+#: ui/GeneralPage.blp:137
+msgid "DNS route update interval (e.g., 1m0s)"
+msgstr ""
+
+#: ui/GeneralPage.blp:141
+msgid "Extra DNS Labels"
+msgstr ""
+
+#: ui/GeneralPage.blp:142
+msgid "Comma-separated list of up to 32 DNS labels (e.g., vpc1,mgmt1)"
+msgstr ""
+
+#: ui/GeneralPage.blp:148
+msgid "Firewall Settings"
+msgstr ""
+
+#: ui/GeneralPage.blp:149
+msgid "Configure firewall behavior."
+msgstr ""
+
+#: ui/GeneralPage.blp:152
+msgid "Disable Firewall"
+msgstr ""
+
+#: ui/GeneralPage.blp:153
+msgid "Don't modify firewall rules"
+msgstr ""
+
+#: ui/GeneralPage.blp:159
+msgid "Advanced Network Settings"
+msgstr ""
+
+#: ui/GeneralPage.blp:160
+msgid "Advanced WireGuard and network interface configuration."
+msgstr ""
+
+#: ui/GeneralPage.blp:163
+msgid "WireGuard Interface Name"
+msgstr ""
+
+#: ui/GeneralPage.blp:164
+msgid "Name of the WireGuard interface"
+msgstr ""
+
+#: ui/GeneralPage.blp:168
+msgid "MTU"
+msgstr ""
+
+#: ui/GeneralPage.blp:169
+msgid "Maximum Transmission Unit for WireGuard interface"
+msgstr ""
+
+#: ui/GeneralPage.blp:179
+msgid "WireGuard Port"
+msgstr ""
+
+#: ui/GeneralPage.blp:180
+msgid "WireGuard interface listening port"
+msgstr ""
+
+#: ui/GeneralPage.blp:190
+msgid "External IP Maps"
+msgstr ""
+
+#: ui/GeneralPage.blp:191
+msgid ""
+"Comma-separated list of IP maps (e.g., 12.34.56.78/10.0.0.1,12.34.56.80/eth1)"
+msgstr ""
+
+#: ui/GeneralPage.blp:195
+msgid "Extra Interface Blacklist"
+msgstr ""
+
+#: ui/GeneralPage.blp:196
+msgid "Extra list of default interfaces to ignore for listening"
+msgstr ""
+
+#: ui/GeneralPage.blp:200
+msgid "Network Monitoring"
+msgstr ""
+
+#: ui/GeneralPage.blp:201
+msgid "Enable network monitoring"
+msgstr ""
+
+#: ui/GeneralPage.blp:207
+msgid "Experimental Features"
+msgstr ""
+
+#: ui/GeneralPage.blp:208
+msgid "Experimental features that may change or be removed in future versions."
+msgstr ""
+
+#: ui/GeneralPage.blp:211
+msgid "Enable Lazy Connection"
+msgstr ""
+
+#: ui/GeneralPage.blp:212
+msgid "[Experimental] Establish connections on-demand"
+msgstr ""
+
+#: ui/GeneralPage.blp:216
+msgid "Enable Rosenpass"
+msgstr ""
+
+#: ui/GeneralPage.blp:217
+msgid "[Experimental] Post-quantum security via Rosenpass"
+msgstr ""
+
+#: ui/GeneralPage.blp:221
+msgid "Rosenpass Permissive Mode"
+msgstr ""
+
+#: ui/GeneralPage.blp:222
+msgid "[Experimental] Accept connections from peers without Rosenpass"
+msgstr ""
+
+#: ui/GeneralPage.blp:228
+msgid "Authentication Settings"
+msgstr ""
+
+#: ui/GeneralPage.blp:229
+msgid "Configure authentication and profile options."
+msgstr ""
+
+#: ui/GeneralPage.blp:232
+msgid "No Browser for SSO"
+msgstr ""
+
+#: ui/GeneralPage.blp:233
+msgid "Don't open browser for SSO login"
+msgstr ""
+
+#: ui/GeneralPage.blp:237
+msgid "Profile Name"
+msgstr ""
+
+#: ui/GeneralPage.blp:238
+msgid "Profile name to use for login (uses last profile if empty)"
+msgstr ""

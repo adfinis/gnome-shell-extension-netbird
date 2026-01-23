@@ -1,0 +1,69 @@
+{
+  "name": "gnome-shell-extension-netbird",
+  "version": "1.0.0",
+  "description": "An inofficial GNOME Shell extension for Netbird.",
+  "type": "module",
+  "main": "dist/extension.js",
+  "private": true,
+  "author": "Jonah Zürcher <jonah.zuercher@adfinis.com>",
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "@jon4hz/gsebuild": "^0.1.3",
+    "@tsconfig/strictest": "^2.0.5",
+    "adm-zip": "^0.5.16",
+    "esbuild": "^0.25.2",
+    "eslint": "^9.24.0",
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-jsdoc": "^50.6.9",
+    "prettier": "^3.5.3",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=23"
+  },
+  "dependencies": {
+    "@girs/gjs": "^4.0.0-beta.23",
+    "@girs/gnome-shell": "^48.0.2",
+    "@girs/secret-1": "^0.21.7-4.0.0-beta.23",
+    "@girs/soup-3.0": "^3.6.4-4.0.0-beta.23"
+  },
+  "scripts": {
+    "blueprint": "glob -c 'blueprint-compiler batch-compile ui ui' 'ui/*.blp'",
+    "postblueprint": "git add ui",
+    "compile": "tsc --build tsconfig.json",
+    "postcompile": "eslint --no-config-lookup --config eslint.config.dist.js --quiet --fix .",
+    "prepack": "npm run compile",
+    "pack": "gsebuild pack",
+    "check:types": "tsc --build tsconfig.types.json --force",
+    "xgettext": "gsebuild xgettext",
+    "lint": "eslint .",
+    "format": "prettier .",
+    "clean": "rimraf --no-interactive dist build"
+  },
+  "gsebuild": {
+    "gettext": {
+      "sources": [
+        "ui/*.blp"
+      ],
+      "copyright-holder": "Adfinis AG <support@adfinis.com>"
+    },
+    "pack": {
+      "copy-to-source": [
+        "ui/*.ui"
+      ],
+      "source-directory": "build",
+      "extra-sources": [
+        "lib",
+        "ui",
+        "../LICENSE*",
+        "../README.md",
+        "../icons/",
+        "../src/stylesheet.css"
+      ],
+      "schemas": [
+        "../schemas/*.gschema.xml"
+      ]
+    }
+  }
+}

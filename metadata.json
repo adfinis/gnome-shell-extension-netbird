@@ -1,0 +1,10 @@
+{
+    "uuid": "netbird@adfinis.com",
+    "name": "Netbird",
+    "description": "An inofficial GNOME Shell extension for Netbird.",
+    "version": "0.1.0",
+    "shell-version": ["46", "47", "48", "49"],
+    "url": "https://netbird.io",
+    "gettext-domain": "netbird@adfinis.com",
+    "settings-schema": "org.gnome.shell.extensions.netbird"
+}

@@ -1,0 +1,244 @@
+name: "Build and Release Extension"
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to build (e.g., 1.0.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
+      package-name: ${{ steps.get-version.outputs.package-name }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "23"
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y blueprint-compiler gettext
+          yarn install --frozen-lockfile
+
+      - name: Get Version
+        id: get-version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION="${GITHUB_REF#refs/tags/v}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "package-name=netbird@adfinis.com-v$VERSION.zip" >> $GITHUB_OUTPUT
+          echo "Building version: $VERSION"
+
+      - name: Update Version in metadata.json
+        run: |
+          VERSION="${{ steps.get-version.outputs.version }}"
+          echo "Updating metadata.json with version $VERSION"
+
+          # Update version using jq
+          if ! command -v jq &> /dev/null; then
+            echo "Installing jq..."
+            sudo apt-get update && sudo apt-get install -y jq
+          fi
+
+          jq --arg version "$VERSION" '.version = $version' metadata.json > metadata.json.tmp
+          mv metadata.json.tmp metadata.json
+
+          echo "Updated metadata.json:"
+          cat metadata.json
+
+      - name: Build Extension
+        run: make all
+
+      - name: Verify build output
+        run: |
+          echo "Checking dist directory..."
+          ls -la dist/ || echo "Warning: dist directory not found"
+
+          echo "Checking build directory..."
+          ls -la build/ || echo "Warning: build directory not found"
+
+          echo "Looking for zip files..."
+          find . -name "*.zip" -type f
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: extension-package
+          path: dist/*.zip
+          retention-days: 30
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v7
+        with:
+          name: extension-package
+          path: ./artifacts
+
+      - name: Generate Release Notes
+        id: generate-notes
+        run: |
+          # Get the previous tag (second most recent)
+          CURRENT_TAG=$(git describe --tags --abbrev=0)
+          PREV_TAG=$(git tag --sort=-version:refname | grep -A1 "^${CURRENT_TAG}$" | tail -1 | grep -v "^${CURRENT_TAG}$" || echo "")
+
+          if [ -z "$PREV_TAG" ]; then
+            echo "No previous tag found, generating notes from all commits"
+            COMMITS=$(git log --pretty=format:"- %s" --reverse)
+          else
+            echo "Generating notes from $PREV_TAG to HEAD"
+            COMMITS=$(git log --pretty=format:"- %s" --reverse "$PREV_TAG"..HEAD)
+          fi
+
+          # Filter conventional commits and categorize them
+          FEATURES=""
+          FIXES=""
+          BREAKING=""
+          OTHER=""
+
+          while IFS= read -r commit; do
+            if [[ $commit =~ ^-[[:space:]]*feat(\(.+\))?!: ]]; then
+              BREAKING="$BREAKING$commit"$'\n'
+            elif [[ $commit =~ ^-[[:space:]]*feat(\(.+\))?: ]]; then
+              FEATURES="$FEATURES$commit"$'\n'
+            elif [[ $commit =~ ^-[[:space:]]*fix(\(.+\))?: ]]; then
+              FIXES="$FIXES$commit"$'\n'
+            elif [[ $commit =~ ^-[[:space:]]*[a-zA-Z]+(\(.+\))?!: ]]; then
+              BREAKING="$BREAKING$commit"$'\n'
+            else
+              OTHER="$OTHER$commit"$'\n'
+            fi
+          done <<< "$COMMITS"
+
+          # Build release notes
+          RELEASE_NOTES=""
+
+          if [ -n "$BREAKING" ]; then
+            RELEASE_NOTES="$RELEASE_NOTES## 💥 Breaking Changes"$'\n\n'"$BREAKING"$'\n'
+          fi
+
+          if [ -n "$FEATURES" ]; then
+            RELEASE_NOTES="$RELEASE_NOTES## 🚀 Features"$'\n\n'"$FEATURES"$'\n'
+          fi
+
+          if [ -n "$FIXES" ]; then
+            RELEASE_NOTES="$RELEASE_NOTES## 🐛 Bug Fixes"$'\n\n'"$FIXES"$'\n'
+          fi
+
+          if [ -n "$OTHER" ]; then
+            RELEASE_NOTES="$RELEASE_NOTES## 📝 Other Changes"$'\n\n'"$OTHER"$'\n'
+          fi
+
+          if [ -z "$RELEASE_NOTES" ]; then
+            RELEASE_NOTES="## Changes"$'\n\n'"- Initial release"$'\n'
+          fi
+
+          echo "Generated release notes:"
+          echo "$RELEASE_NOTES"
+
+          # Save to file for use in release
+          echo "$RELEASE_NOTES" > release_notes.md
+
+      - name: Generate Checksums
+        run: |
+          PACKAGE_PATH="./artifacts/${{ needs.build.outputs.package-name }}"
+          CHECKSUM_FILE="./artifacts/checksum.txt"
+
+          if [ -f "$PACKAGE_PATH" ]; then
+            echo "Generating SHA256 checksum..."
+            sha256sum "$PACKAGE_PATH" | tee "$CHECKSUM_FILE"
+            echo "Checksum saved to $CHECKSUM_FILE"
+          else
+            echo "Warning: Package file not found at $PACKAGE_PATH"
+            exit 1
+          fi
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Release v${{ needs.build.outputs.version }}"
+          body_path: release_notes.md
+          files: |
+            ./artifacts/${{ needs.build.outputs.package-name }}
+            ./artifacts/checksum.txt
+          draft: false
+          prerelease: ${{ contains(needs.build.outputs.version, '-') }}
+          generate_release_notes: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update metadata.json for release
+        run: |
+          # Install jq if needed
+          if ! command -v jq &> /dev/null; then
+            echo "Installing jq..."
+            sudo apt-get update && sudo apt-get install -y jq
+          fi
+
+          VERSION="${{ needs.build.outputs.version }}"
+          echo "Updating metadata.json with version $VERSION"
+
+          jq --arg version "$VERSION" '.version = $version' metadata.json > metadata.json.tmp
+          mv metadata.json.tmp metadata.json
+
+          echo "Updated metadata.json:"
+          cat metadata.json
+
+      - name: Commit and Push metadata.json
+        run: |
+          # Configure git
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          # Check if there are changes to commit
+          if git diff --quiet metadata.json; then
+            echo "No changes to metadata.json"
+          else
+            echo "Committing updated metadata.json"
+
+            # Ensure we're on the main branch
+            echo "Current branch: $(git branch --show-current || echo 'detached HEAD')"
+            echo "Checking out main branch..."
+            git fetch origin main
+            git checkout main || git checkout -b main origin/main
+
+            # Add and commit changes
+            git add metadata.json
+            git commit -m "chore: update metadata.json for release v${{ needs.build.outputs.version }}"
+
+            # Push to main branch
+            echo "Pushing changes to main branch..."
+            git push origin main
+          fi
