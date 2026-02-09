@@ -11,7 +11,7 @@
     "@jon4hz/gsebuild": "^0.1.3",
     "@tsconfig/strictest": "^2.0.8",
     "adm-zip": "^0.5.16",
-    "esbuild": "^0.27.2",
+    "esbuild": "^0.27.3",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-jsdoc": "^62.4.1",
