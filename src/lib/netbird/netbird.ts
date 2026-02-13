@@ -17,6 +17,14 @@ export interface NetbirdStatus {
   errorMessage?: string;
 }
 
+export interface NetbirdNetwork {
+  id: string;
+  domains?: string | undefined;
+  network?: string | undefined;
+  selected: boolean;
+  resolvedIPs?: string | undefined;
+}
+
 /**
  * General options that apply to all netbird commands
  */
@@ -66,8 +74,7 @@ export interface NetbirdUpOptions {
  * Combined options for connection (general + up command options)
  */
 export interface NetbirdConnectionOptions
-  extends NetbirdGeneralOptions,
-    NetbirdUpOptions {}
+  extends NetbirdGeneralOptions, NetbirdUpOptions {}
 
 export class NetbirdClient {
   private _cancellable: Gio.Cancellable | null = null;
@@ -364,9 +371,7 @@ export class NetbirdClient {
   /**
    * Get the current status of NetBird
    */
-  async getStatus(
-    options: NetbirdGeneralOptions = {},
-  ): Promise<NetbirdStatus> {
+  async getStatus(options: NetbirdGeneralOptions = {}): Promise<NetbirdStatus> {
     const command = this._buildStatusCommand(options);
     console.log(`[NetBird] Executing status check: ${command.join(" ")}`);
     const result = await this._executeCommand(command);
@@ -425,6 +430,154 @@ export class NetbirdClient {
       );
     }
     return result;
+  }
+
+  /**
+   * Parse the output of 'netbird networks list' command
+   */
+  private _parseNetworksList(output: string): NetbirdNetwork[] {
+    const networks: NetbirdNetwork[] = [];
+    // Split on blank lines (only horizontal whitespace between newlines)
+    const blocks = output.split(/\n[ \t]*\n/);
+
+    for (const block of blocks) {
+      const lines = block.split("\n").map((l) => l.replace(/^\s+/, ""));
+
+      // Skip header blocks like "Available Networks:"
+      if (lines.every((l) => !l.startsWith("- ID:") && !l.startsWith("ID:"))) {
+        continue;
+      }
+      let id: string | undefined;
+      let domains: string | undefined;
+      let network: string | undefined;
+      let selected = false;
+      let resolvedIPs: string | undefined;
+
+      for (const line of lines) {
+        if (line.startsWith("- ID:")) {
+          id = line.replace(/^-\s*ID:\s*/, "");
+        } else if (line.startsWith("ID:")) {
+          id = line.replace(/^ID:\s*/, "");
+        } else if (line.startsWith("Domains:")) {
+          domains = line.replace(/^Domains:\s*/, "").trim();
+        } else if (line.startsWith("Network:")) {
+          network = line.replace(/^Network:\s*/, "").trim();
+        } else if (line.startsWith("Status:")) {
+          const status = line.replace(/^Status:\s*/, "").trim();
+          selected = status === "Selected";
+        } else if (line.startsWith("Resolved IPs:")) {
+          const val = line.replace(/^Resolved IPs:\s*/, "").trim();
+          if (val !== "-") {
+            resolvedIPs = val;
+          }
+        }
+      }
+
+      if (id) {
+        networks.push({ id, domains, network, selected, resolvedIPs });
+      }
+    }
+
+    return networks;
+  }
+
+  /**
+   * Build networks list command with global flags
+   */
+  private _buildNetworksListCommand(options: NetbirdGeneralOptions): string[] {
+    const command = ["netbird"];
+    this._addGlobalFlags(command, options);
+    command.push("networks", "list");
+    return command;
+  }
+
+  /**
+   * Build networks select/deselect command with global flags
+   */
+  private _buildNetworksToggleCommand(
+    options: NetbirdGeneralOptions,
+    action: "select" | "deselect",
+    networkId: string,
+  ): string[] {
+    const command = ["netbird"];
+    this._addGlobalFlags(command, options);
+    command.push("networks", action);
+    if (action === "select") {
+      // otherwise the command will replace the current selection instead of adding to it
+      command.push("--append");
+    }
+    command.push(networkId);
+    return command;
+  }
+
+  /**
+   * List available networks
+   */
+  async listNetworks(
+    options: NetbirdGeneralOptions = {},
+  ): Promise<{ success: boolean; networks: NetbirdNetwork[]; error?: string }> {
+    const command = this._buildNetworksListCommand(options);
+    console.log(`[NetBird] Executing networks list: ${command.join(" ")}`);
+    const result = await this._executeCommand(command);
+
+    if (!result.success) {
+      console.log(
+        `[NetBird] Networks list failed: ${result.error ?? "Unknown error"}`,
+      );
+      return {
+        success: false,
+        networks: [],
+        error: result.error ?? "Failed to list networks",
+      };
+    }
+
+    const networks = this._parseNetworksList(result.output);
+    console.log(`[NetBird] Found ${networks.length.toString()} networks`);
+    return { success: true, networks };
+  }
+
+  /**
+   * Select a network by ID
+   */
+  async selectNetwork(
+    networkId: string,
+    options: NetbirdGeneralOptions = {},
+  ): Promise<{ success: boolean; error?: string | undefined }> {
+    const command = this._buildNetworksToggleCommand(
+      options,
+      "select",
+      networkId,
+    );
+    console.log(`[NetBird] Selecting network: ${command.join(" ")}`);
+    const result = await this._executeCommand(command);
+    if (!result.success) {
+      console.log(
+        `[NetBird] Network select failed: ${result.error ?? "Unknown error"}`,
+      );
+    }
+    return { success: result.success, error: result.error };
+  }
+
+  /**
+   * Deselect a network by ID
+   */
+  async deselectNetwork(
+    networkId: string,
+    options: NetbirdGeneralOptions = {},
+  ): Promise<{ success: boolean; error?: string | undefined }> {
+    const command = this._buildNetworksToggleCommand(
+      options,
+      "deselect",
+      networkId,
+    );
+    console.log(`[NetBird] Deselecting network: ${command.join(" ")}`);
+    const result = await this._executeCommand(command);
+    if (!result.success) {
+      console.log(
+        `[NetBird] Network deselect failed: ${result.error ?? "Unknown error"}`,
+      );
+    }
+    return { success: result.success, error: result.error };
   }
 
   /**

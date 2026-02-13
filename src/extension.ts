@@ -12,6 +12,7 @@ import {
   NetbirdClient,
   NetbirdState,
   NetbirdConnectionOptions,
+  NetbirdNetwork,
 } from "./lib/netbird/netbird.js";
 import { SettingsKeys } from "./lib/settings/settings.js";
 import { getIconFromFile } from "./lib/utils/utils.js";
@@ -26,6 +27,8 @@ const NetbirdMenuToggle = GObject.registerClass(
     private _clickHandlerId: number | null = null;
     private _connectionItem: PopupMenu.PopupMenuItem | null = null;
     private _vpnSection: PopupMenu.PopupMenuSection;
+    private _networksSection: PopupMenu.PopupMenuSection | null = null;
+    private _networksSubMenu: PopupMenu.PopupSubMenuMenuItem | null = null;
     private _extension: Extension;
     private _notificationAddedId: number | null = null;
     private _suppressNextNetworkError = false;
@@ -60,6 +63,12 @@ const NetbirdMenuToggle = GObject.registerClass(
       this._vpnSection.addMenuItem(this._connectionItem);
       this.menu.addMenuItem(this._vpnSection);
 
+      // Add the networks submenu section
+      this._networksSection = new PopupMenu.PopupMenuSection();
+      this._networksSubMenu = new PopupMenu.PopupSubMenuMenuItem("Networks");
+      this._networksSection.addMenuItem(this._networksSubMenu);
+      this.menu.addMenuItem(this._networksSection);
+
       // Add separator and settings button
       this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
       this.menu.addAction("Settings", () => {
@@ -90,6 +99,9 @@ const NetbirdMenuToggle = GObject.registerClass(
 
       // Now check initial status
       await this._updateStatus();
+
+      // Load networks list
+      await this._updateNetworks();
     }
 
     private _setupNotificationFilter(): void {
@@ -210,6 +222,109 @@ const NetbirdMenuToggle = GObject.registerClass(
         const messageTray = Main.messageTray;
         messageTray.disconnect(this._notificationAddedId);
         this._notificationAddedId = null;
+      }
+    }
+
+    private async _updateNetworks(): Promise<void> {
+      if (!this._networksSubMenu) return;
+
+      try {
+        const options = this._getConnectionOptions();
+        const result = await this._client.listNetworks(options);
+
+        // Clear existing network items
+        this._networksSubMenu.menu.removeAll();
+
+        if (!result.success || result.networks.length === 0) {
+          const emptyItem = new PopupMenu.PopupMenuItem(
+            result.success
+              ? "No networks available"
+              : "Failed to load networks",
+          );
+          emptyItem.sensitive = false;
+          this._networksSubMenu.menu.addMenuItem(emptyItem);
+          return;
+        }
+
+        for (const network of result.networks) {
+          const displayName = network.id.trim();
+          const description = network.domains ?? network.network;
+          const label = description
+            ? `${displayName}  (${description})`
+            : displayName;
+
+          const item = new PopupMenu.PopupSwitchMenuItem(
+            label,
+            network.selected,
+          );
+
+          // Override activate to prevent the menu from closing on toggle
+          item.activate = () => {
+            item.toggle();
+          };
+
+          const toggleHandlerId = item.connect(
+            "toggled",
+            (switchItem: PopupMenu.PopupSwitchMenuItem, state: boolean) => {
+              void this._onNetworkToggled(
+                network,
+                state,
+                switchItem,
+                toggleHandlerId,
+              );
+            },
+          );
+
+          this._networksSubMenu.menu.addMenuItem(item);
+        }
+      } catch (e) {
+        console.error("[NetBird] Failed to update networks:", e);
+        this._networksSubMenu.menu.removeAll();
+        const errorItem = new PopupMenu.PopupMenuItem("Error loading networks");
+        errorItem.sensitive = false;
+        this._networksSubMenu.menu.addMenuItem(errorItem);
+      }
+    }
+
+    private async _onNetworkToggled(
+      network: NetbirdNetwork,
+      state: boolean,
+      item: PopupMenu.PopupSwitchMenuItem,
+      handlerId: number,
+    ): Promise<void> {
+      try {
+        const options = this._getConnectionOptions();
+        let result;
+
+        if (state) {
+          result = await this._client.selectNetwork(network.id, options);
+        } else {
+          result = await this._client.deselectNetwork(network.id, options);
+        }
+
+        if (result.success) {
+          const action = state ? "selected" : "deselected";
+          console.log(
+            `[NetBird] Network "${network.id}" ${action} successfully`,
+          );
+        } else {
+          const action = state ? "select" : "deselect";
+          this._notificationManager.notifyError(
+            `Failed to ${action} network "${network.id}": ${result.error ?? "Unknown error"}`,
+          );
+          // Block the signal to prevent retriggering, then revert the toggle
+          item.block_signal_handler(handlerId);
+          item.setToggleState(!state);
+          item.unblock_signal_handler(handlerId);
+        }
+      } catch (e) {
+        this._notificationManager.notifyError(
+          e instanceof Error ? e.message : String(e),
+        );
+        // Block the signal to prevent retriggering, then revert the toggle
+        item.block_signal_handler(handlerId);
+        item.setToggleState(!state);
+        item.unblock_signal_handler(handlerId);
       }
     }
 
@@ -551,6 +666,19 @@ const NetbirdMenuToggle = GObject.registerClass(
           return GLib.SOURCE_CONTINUE;
         },
       ) as unknown as number;
+
+      // Refresh networks list whenever the submenu is opened
+      if (this._networksSubMenu) {
+        this._networksSubMenu.menu.connect(
+          "open-state-changed",
+          (_menu, open) => {
+            if (open) {
+              void this._updateNetworks();
+            }
+            return undefined;
+          },
+        );
+      }
     }
 
     stopPeriodicUpdates(): void {
