@@ -45,7 +45,7 @@ export default class NetbirdPreferences extends ExtensionPreferences {
         const aboutDialog = new Adw.AboutWindow({
           transient_for: window,
           modal: true,
-          version: this.metadata.version ?? "unknown",
+          version: this.metadata["version"] ?? "unknown", // eslint-disable-line @typescript-eslint/dot-notation
           application_name: this.metadata.name,
           developer_name: "Adfinis AG",
           developers: ["Jonah Zürcher <jonah.zuercher@adfinis.com>"],
@@ -53,8 +53,8 @@ export default class NetbirdPreferences extends ExtensionPreferences {
             "https://github.com/adfinis/gnome-shell-extension-netbird/issues",
           support_url:
             "https://github.com/adfinis/gnome-shell-extension-netbird/issues",
-          website: this.metadata.url ?? "https://netbird.io/",
           license_type: Gtk.License.GPL_3_0,
+          website: this.metadata["url"] ?? "https://netbird.io/", // eslint-disable-line @typescript-eslint/dot-notation
           copyright: `© ${new Date().getFullYear().toString()} Adfinis AG`,
         });
 

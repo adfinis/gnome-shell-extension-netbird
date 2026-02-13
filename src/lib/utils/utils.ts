@@ -1,6 +1,8 @@
 import Gtk from "gi://Gtk";
 import Gio from "gi://Gio";
-import { type ExtensionMetadata } from "resource:///org/gnome/shell/extensions/extension.js";
+import { type Extension } from "resource:///org/gnome/shell/extensions/extension.js";
+
+type ExtensionMetadata = Extension["metadata"];
 
 export function findChildByType<T>(
   parent: Gtk.Widget | null,
@@ -20,7 +22,7 @@ export function getIconFromFile(
   iconName: string,
 ): Gio.Icon {
   const iconFile = Gio.File.new_for_path(
-    `${metadata.path}/icons/${iconName}.svg`,
+    `${metadata["path"]}/icons/${iconName}.svg`, // eslint-disable-line @typescript-eslint/dot-notation
   );
   return new Gio.FileIcon({ file: iconFile });
 }

@@ -1,8 +1,10 @@
 import * as Main from "resource:///org/gnome/shell/ui/main.js";
 import * as MessageTray from "resource:///org/gnome/shell/ui/messageTray.js";
-import { ExtensionMetadata } from "resource:///org/gnome/shell/extensions/extension.js";
+import { Extension } from "resource:///org/gnome/shell/extensions/extension.js";
 
 import { getIconFromFile } from "../utils/utils.js";
+
+type ExtensionMetadata = Extension["metadata"];
 
 export class NotificationManager {
   private _source: MessageTray.Source | null = null;
