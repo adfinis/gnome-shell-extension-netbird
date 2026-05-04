@@ -316,6 +316,15 @@
     "@girs/glib-2.0" "2.88.0-4.0.0-rc.1"
     "@girs/gobject-2.0" "2.88.0-4.0.0-rc.1"
 
+"@girs/cairo-1.0@1.0.0-4.0.0-rc.9":
+  version "1.0.0-4.0.0-rc.9"
+  resolved "https://registry.yarnpkg.com/@girs/cairo-1.0/-/cairo-1.0-1.0.0-4.0.0-rc.9.tgz#86401a205236e96f80296cb65f01e19aae70b2da"
+  integrity sha512-zeY4NcJvQL8UTkyvWQY0ZRe8MgVu3ldartR+ML8oPH/gGys8l2TK1yCO5RvGZbBHt+jeJy7ZRSOC4IwL3yWaAg==
+  dependencies:
+    "@girs/gjs" "4.0.0-rc.9"
+    "@girs/glib-2.0" "2.88.0-4.0.0-rc.9"
+    "@girs/gobject-2.0" "2.88.0-4.0.0-rc.9"
+
 "@girs/clutter-17@17.0.0-4.0.0-beta.38", "@girs/clutter-17@^17.0.0-4.0.0-beta.38":
   version "17.0.0-4.0.0-beta.38"
   resolved "https://registry.yarnpkg.com/@girs/clutter-17/-/clutter-17-17.0.0-4.0.0-beta.38.tgz#b2f959f89feca90ca53892617d500511aa99fad8"
@@ -456,6 +465,16 @@
     "@girs/gmodule-2.0" "2.0.0-4.0.0-rc.1"
     "@girs/gobject-2.0" "2.88.0-4.0.0-rc.1"
 
+"@girs/gio-2.0@2.88.0-4.0.0-rc.9":
+  version "2.88.0-4.0.0-rc.9"
+  resolved "https://registry.yarnpkg.com/@girs/gio-2.0/-/gio-2.0-2.88.0-4.0.0-rc.9.tgz#2136ff522a4ddc255481fb7a73fdb31c443bd38d"
+  integrity sha512-ESoyk4ybL1/T09B7J/vgzF00GTI9KWQhDMtwTH8fMEBrubfzQD+Z9LL5v9du8+Flt3yR5RquajCkmg3aXk9jWA==
+  dependencies:
+    "@girs/gjs" "4.0.0-rc.9"
+    "@girs/glib-2.0" "2.88.0-4.0.0-rc.9"
+    "@girs/gmodule-2.0" "2.0.0-4.0.0-rc.9"
+    "@girs/gobject-2.0" "2.88.0-4.0.0-rc.9"
+
 "@girs/gio-2.0@^2.84.0-4.0.0-beta.23":
   version "2.84.0-4.0.0-beta.23"
   resolved "https://registry.yarnpkg.com/@girs/gio-2.0/-/gio-2.0-2.84.0-4.0.0-beta.23.tgz#456d7cb2037b07698ed3513b19ff8bbb21e5206a"
@@ -487,7 +506,7 @@
     "@girs/glib-2.0" "2.86.0-4.0.0-beta.38"
     "@girs/gobject-2.0" "2.86.0-4.0.0-beta.38"
 
-"@girs/gjs@4.0.0-rc.1", "@girs/gjs@^4.0.0-beta.23", "@girs/gjs@^4.0.0-beta.38", "@girs/gjs@^4.0.0-beta.43":
+"@girs/gjs@4.0.0-rc.1":
   version "4.0.0-rc.1"
   resolved "https://registry.yarnpkg.com/@girs/gjs/-/gjs-4.0.0-rc.1.tgz#b820022612c381bbaab1cf87fa6796c90582724e"
   integrity sha512-QwR/37kLXNtvtLuUBWoCSuTfXUb0Lnr5kbrRMk/6jxVJVvrtMrvu4taKMTPOlUFYbLLSZTC6wtDvXCp/LXYPdg==
@@ -496,6 +515,16 @@
     "@girs/gio-2.0" "2.88.0-4.0.0-rc.1"
     "@girs/glib-2.0" "2.88.0-4.0.0-rc.1"
     "@girs/gobject-2.0" "2.88.0-4.0.0-rc.1"
+
+"@girs/gjs@4.0.0-rc.9", "@girs/gjs@^4.0.0-beta.23", "@girs/gjs@^4.0.0-beta.38", "@girs/gjs@^4.0.0-rc.9":
+  version "4.0.0-rc.9"
+  resolved "https://registry.yarnpkg.com/@girs/gjs/-/gjs-4.0.0-rc.9.tgz#f418062808990d12659d3e8c5893c33b557da6f6"
+  integrity sha512-lTEkBK4CZzYTGw57LJFWkXzdFRzpaqGPFD54tuXJHPJt2lMYtQxMzS9qqRB7ywvY2EWLwrbpcaK6oBlMhU6JgA==
+  dependencies:
+    "@girs/cairo-1.0" "1.0.0-4.0.0-rc.9"
+    "@girs/gio-2.0" "2.88.0-4.0.0-rc.9"
+    "@girs/glib-2.0" "2.88.0-4.0.0-rc.9"
+    "@girs/gobject-2.0" "2.88.0-4.0.0-rc.9"
 
 "@girs/gl-1.0@1.0.0-4.0.0-beta.38":
   version "1.0.0-4.0.0-beta.38"
@@ -520,6 +549,14 @@
   dependencies:
     "@girs/gjs" "4.0.0-rc.1"
     "@girs/gobject-2.0" "2.88.0-4.0.0-rc.1"
+
+"@girs/glib-2.0@2.88.0-4.0.0-rc.9":
+  version "2.88.0-4.0.0-rc.9"
+  resolved "https://registry.yarnpkg.com/@girs/glib-2.0/-/glib-2.0-2.88.0-4.0.0-rc.9.tgz#d08e9e9c6d4b3cdc1bb1f39c9ee63bff9bf37fd5"
+  integrity sha512-7cclBcQ6sgs/OlyO25GOEutw1959ManLxDMcXQVIYJzOd+rxGkYNULcqkHBfHvxaufog1TDWVQ70e489CB002g==
+  dependencies:
+    "@girs/gjs" "4.0.0-rc.9"
+    "@girs/gobject-2.0" "2.88.0-4.0.0-rc.9"
 
 "@girs/glib-2.0@^2.84.0-4.0.0-beta.23":
   version "2.84.0-4.0.0-beta.23"
@@ -546,6 +583,15 @@
     "@girs/gjs" "4.0.0-rc.1"
     "@girs/glib-2.0" "2.88.0-4.0.0-rc.1"
     "@girs/gobject-2.0" "2.88.0-4.0.0-rc.1"
+
+"@girs/gmodule-2.0@2.0.0-4.0.0-rc.9":
+  version "2.0.0-4.0.0-rc.9"
+  resolved "https://registry.yarnpkg.com/@girs/gmodule-2.0/-/gmodule-2.0-2.0.0-4.0.0-rc.9.tgz#f3a163603515d702ebaf4a70de45d76c7f44bed9"
+  integrity sha512-V8PQ0VXVOAStLKheCuWYJRUO5GUpMYmUdSvHuvktQIqJHSehwWOAkuzDBJcgKbMrIpoGjswXKji65Im9UYX1rQ==
+  dependencies:
+    "@girs/gjs" "4.0.0-rc.9"
+    "@girs/glib-2.0" "2.88.0-4.0.0-rc.9"
+    "@girs/gobject-2.0" "2.88.0-4.0.0-rc.9"
 
 "@girs/gnome-shell@^49.1.0":
   version "49.1.0"
@@ -636,6 +682,14 @@
   dependencies:
     "@girs/gjs" "4.0.0-rc.1"
     "@girs/glib-2.0" "2.88.0-4.0.0-rc.1"
+
+"@girs/gobject-2.0@2.88.0-4.0.0-rc.9":
+  version "2.88.0-4.0.0-rc.9"
+  resolved "https://registry.yarnpkg.com/@girs/gobject-2.0/-/gobject-2.0-2.88.0-4.0.0-rc.9.tgz#eb906fbfd743857c2849e3763da2f1a18b644240"
+  integrity sha512-RdmPZYbFIUDuxMAmRphz6vnOTmigN0pLHx9ALFrYOtR1J7zkpOWlXDDIVgU79xnt+lTwU5q2ptSNcjldWZ217w==
+  dependencies:
+    "@girs/gjs" "4.0.0-rc.9"
+    "@girs/glib-2.0" "2.88.0-4.0.0-rc.9"
 
 "@girs/gobject-2.0@^2.84.0-4.0.0-beta.23":
   version "2.84.0-4.0.0-beta.23"
